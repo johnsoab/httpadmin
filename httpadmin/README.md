@@ -21,11 +21,10 @@ Role assumes RHEL/CentOS 7.x. Has not been checked against RHEL 6.x
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
 
     - hosts: servers
       roles:
-         - { role: httpdadmin, x: 42 }
+         - { role: httpadmin, sudoers: ["testuser1","testuser42"] }
 
 License
 -------
