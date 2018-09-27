@@ -1,0 +1,7 @@
+---
+- name: Playbook for rolling out webadmins
+  hosts: localhost
+  roles:
+    - { role: httpadmin, sudoers: ["testusr1", "testusr2"] }
+  become: yes
+      

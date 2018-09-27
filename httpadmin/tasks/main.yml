@@ -1,0 +1,64 @@
+---
+# tasks file for httpadmin
+- name: Create webadmins group
+  group:
+    name: "{{ groupname }}"
+    state: present
+
+- name: Allow 'webadmins' group to have passwordless sudo to webserver mgmt
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: "^%{{ groupname }}"
+    line: "%{{ groupname }} ALL=(root) NOPASSWD: {{ allowedcmds }}"
+    validate: visudo -cf %s
+
+- name: Add sudoers users to webadmins group
+  user:
+    name: "{{ item }}"
+    group: "{{ groupname }}"
+  with_items: "{{ sudoers }}"
+
+- name: Ensure httpd package installed
+  yum:
+    name: "httpd"
+    state: present
+
+- name: Ensure file permissions of logs are updated by logrotate.d
+  lineinfile:
+    dest: /etc/logrotate.d/httpd
+    state: present
+    insertbefore: "^.*endscript"
+    line: "        /usr/bin/setfacl -m g:{{ groupname }}:rx /var/log/httpd"
+
+- name: Grant webadmins access to logfiles initially
+  acl:
+    entity: "{{ groupname }}"
+    etype: "group"
+    path: "/var/log/httpd"
+    permissions: "rx"
+    recursive: false
+    state: present
+
+- name: Grant webadmins modify permission to apache files
+  acl:
+    entity: "{{ groupname }}"
+    etype: "group"
+    path: "{{ item }}"
+    permissions: "rwx"
+    recursive: true
+    state: present
+  with_items:
+    - "{{ htmldir }}"
+    - "/etc/httpd/conf"
+    - "/etc/httpd/conf.d"
+    - "/etc/httpd/conf.modules.d"
+    - "/etc/pki/tls/certs"
+    - "/etc/pki/tls/private"
+
+
+
+
+
+
+

@@ -1,0 +1,5 @@
+---
+# defaults file for httpadmin
+groupname: "webadmins"
+allowedcmds: "/usr/sbin/apachectl,/usr/bin/systemctl start httpd.service,/usr/bin/systemctl stop httpd.service,/usr/bin/systemctl restart httpd.service,/usr/bin/systemctl status httpd.service,/usr/bin/systemctl reload httpd.service,/usr/sbin/semanage"
+htmldir: "/var/www/html"
